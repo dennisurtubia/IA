@@ -21,10 +21,11 @@ bool modaCompare(Moda m1, Moda m2) {
 
 int knn(vector<vector <float> >& samples, vector<float> test, vector<int> attr, int k) {
   float dist = 0, aux = 0;
-  
+
   for (int i = 0; i < samples.size(); i++) {
-    for (int j = 0; j < attr.size(); j++) {
-      aux = samples.at(i).at(j) - test.at(j);
+    for (int j = 0, k = 0; j < attr.size(); j++) {
+      k = attr.at(j);
+      aux = samples.at(i).at(k) - test.at(k);
       dist += pow(aux, 2);
     }
     dist = sqrt(dist);
@@ -70,7 +71,6 @@ void parseLine(string line, vector<float>* parsedLine) {
   while(getline(token, intermediate, ' ')) {
     (*parsedLine).push_back(atof(intermediate.c_str()));
   }
-
 } 
 
 void getSamples(char* file, vector<vector <float> >* samples) {
@@ -78,7 +78,7 @@ void getSamples(char* file, vector<vector <float> >* samples) {
   string line;
 
   train.open(file, ios::in);
-  
+
   if (!train.is_open()) {
     cout << "falha na abertura do arquivo" << endl;
     exit(1);
@@ -89,7 +89,6 @@ void getSamples(char* file, vector<vector <float> >* samples) {
     parseLine(line, &lineParsed);
 
     (*samples).push_back(lineParsed);
-
   }
 }
 
@@ -135,7 +134,7 @@ int main(int argc, char** argv) {
   int a = accuracy.size();
   float b = (values * 100);
   float c = (b / a);
-  
+
   cout << "Accuracy = " << c << "%" << endl;
   return 0;
 }
