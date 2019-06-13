@@ -3,6 +3,7 @@
 #include <vector>
 #include <cmath>
 #include <bits/stdc++.h>
+#include <stdio.h>
 
 using namespace std;
 
@@ -131,8 +132,10 @@ int main(int argc, char** argv) {
   for (int i = 0; i < accuracy.size(); i++) {
     values += accuracy.at(i);
   }
-
-  cout << "Acurracy = " << (values * 100 / accuracy.size()) << "%" << endl;
-
+  int a = accuracy.size();
+  float b = (values * 100);
+  float c = (b / a);
+  
+  cout << "Accuracy = " << c << "%" << endl;
   return 0;
 }
