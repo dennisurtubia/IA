@@ -15,7 +15,7 @@ bool compare(vector<float> v1, vector<float> v2) {
 }
 
 bool modaCompare(Moda m1, Moda m2) {
-  return (m1.qtd < m2.qtd);
+  return (m1.qtd > m2.qtd);
 }
 
 int knn(vector<vector <float> >& samples, vector<float> test, vector<int> attr, int k) {
@@ -28,6 +28,7 @@ int knn(vector<vector <float> >& samples, vector<float> test, vector<int> attr, 
     }
     dist = sqrt(dist);
     samples.at(i).push_back(dist);
+    dist = 0;
   }
 
   sort(samples.begin(), samples.end(), compare);
@@ -39,7 +40,7 @@ int knn(vector<vector <float> >& samples, vector<float> test, vector<int> attr, 
 
     for (int j = 0; j < moda.size(); j++) {
 
-      if (moda.at(j).value == currentClass) {
+      if (static_cast<int>(moda.at(j).value) == currentClass) {
         moda.at(j).qtd++;
         flag = 1;
         break;
