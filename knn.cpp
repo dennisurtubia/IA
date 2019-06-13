@@ -112,12 +112,30 @@ int main(int argc, char** argv) {
     attrs.push_back(i);
   }
 
-  cout << "classe escolhida " << knn(samples, tests.at(0), attrs, 10) << endl;
+  vector<int> accuracy = vector<int>();
 
-  // Apaga as distancias
-  for (int i = 0; i < samples.size(); i++) {
-    samples.at(i).pop_back();
+  for(int i = 0, current = -1; i < tests.size(); i++, current = -1) {
+    current = knn(samples, tests.at(i), attrs, 1);
+
+    //cout << "element " << i << " is " << tests.at(i).at(tests.at(i).size() - 1) << " knn results " << current << endl;
+
+    accuracy.push_back((current == tests.at(i).at(tests.at(i).size() - 1)) ?
+      1: 0
+    );
+
+    // Apaga as distancias
+    for (int i = 0; i < samples.size(); i++) {
+      samples.at(i).pop_back();
+    }
   }
+
+  int values = 0;
+
+  for (int i = 0; i < accuracy.size(); i++) {
+    values += accuracy.at(i);
+  }
+
+  cout << "Acurracy = " << (values * 100 / accuracy.size()) << "%" << endl;
 
   return 0;
 }
