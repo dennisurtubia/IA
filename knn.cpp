@@ -20,15 +20,13 @@ bool modaCompare(Moda m1, Moda m2) {
 
 int knn(vector<vector <float> >& samples, vector<float> test, vector<int> attr, int k) {
   float dist = 0, aux = 0;
-
+  
   for (int i = 0; i < samples.size(); i++) {
     for (int j = 0; j < attr.size(); j++) {
       aux = samples.at(i).at(j) - test.at(j);
       dist += pow(aux, 2);
     }
-
     dist = sqrt(dist);
-
     samples.at(i).push_back(dist);
   }
 
@@ -36,28 +34,29 @@ int knn(vector<vector <float> >& samples, vector<float> test, vector<int> attr, 
 
   vector<Moda> moda = vector<Moda>();
 
-  for (int i = 0, element = 0, flag = 0, size = samples.at(0).size() - 1; i < k; i++, flag = 0) {
-    element = static_cast<int>(samples.at(i).at(size));
+  for (int i = 0, currentClass = 0, flag = 0, positionClass = samples.at(0).size() - 2; i < k; i++, flag = 0) {
+    currentClass = static_cast<int>(samples.at(i).at(positionClass));
+
+    cout << currentClass << endl;
+
     for (int j = 0; j < moda.size(); j++) {
 
-      if (moda.at(j).value == element) {
+      if (moda.at(j).value == currentClass) {
         moda.at(j).qtd++;
         flag = 1;
         break;
       }
     }
-
     if (flag == 0) {
-      moda.push_back({ element, 1 });
+      moda.push_back({ currentClass, 1 });
     }
   }
 
   sort(moda.begin(), moda.end(), modaCompare);
-
   // Exibe as classes por quantidade
-  // for (int i = 0; i < moda.size(); i++) {
-  //   cout << moda.at(i).value << "  |  " << moda.at(i).qtd << endl;
-  // }
+  for (int i = 0; i < moda.size(); i++) {
+    cout << moda.at(i).value << "  |  " << moda.at(i).qtd << endl;
+  }
 
   return moda.at(0).value;
 }
@@ -85,10 +84,9 @@ void getSamples(char* file, vector<vector <float> >* samples) {
     exit(1);
   }
 
-
   while (getline(train, line)) {
     vector<float> lineParsed = vector<float>();
-     parseLine(line, &lineParsed);
+    parseLine(line, &lineParsed);
 
     (*samples).push_back(lineParsed);
 
