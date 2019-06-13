@@ -37,8 +37,6 @@ int knn(vector<vector <float> >& samples, vector<float> test, vector<int> attr, 
   for (int i = 0, currentClass = 0, flag = 0, positionClass = samples.at(0).size() - 2; i < k; i++, flag = 0) {
     currentClass = static_cast<int>(samples.at(i).at(positionClass));
 
-    cout << currentClass << endl;
-
     for (int j = 0; j < moda.size(); j++) {
 
       if (moda.at(j).value == currentClass) {
@@ -54,9 +52,9 @@ int knn(vector<vector <float> >& samples, vector<float> test, vector<int> attr, 
 
   sort(moda.begin(), moda.end(), modaCompare);
   // Exibe as classes por quantidade
-  for (int i = 0; i < moda.size(); i++) {
-    cout << moda.at(i).value << "  |  " << moda.at(i).qtd << endl;
-  }
+  // for (int i = 0; i < moda.size(); i++) {
+  //   cout << moda.at(i).value << "  |  " << moda.at(i).qtd << endl;
+  // }
 
   return moda.at(0).value;
 }
