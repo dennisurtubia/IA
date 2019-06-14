@@ -6,7 +6,7 @@ TEST=arquivos/teste.txt
 all: run
 
 run: comp
-	./$(ARQ) $(TRAIN) $(TEST)
+	./$(ARQ) $(TRAIN) $(TEST) --log
 
 comp:
 	$(COMP) $(ARQ).cpp -o $(ARQ) -std=c++11

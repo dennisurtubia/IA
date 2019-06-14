@@ -28,27 +28,19 @@ bool population_compare(gene p1, gene p2) {
 }
 
 void selection(vector<gene>& population) {
+  //método elitista, no qual mantém os 6 melhores genes com base na fitness
   sort(population.begin(), population.end(), population_compare);
-
-  // selecionando os individuos de forma em que os 3 primeiros se repetem 6 vezes
-  // e os dois piores se repetem 4
-  copy(population.begin(), population.begin()+3, population.begin()+3);
-  copy(population.begin()+8, population.end(), population.begin()+6);
-  copy(population.begin()+8, population.end(), population.begin()+8);
 }
 
 void cross_over(vector<gene>& population, int population_size) {
-  for(int n = 0; n < population.size() / 2; n++) {
-    for(int i = 1; i < 10; i++) {
-      swap(population.at(n).chromosome.at(i), population.at(population.size() - n - 1).chromosome.at(i));
-    }
+  //mantém os 6 primeiros melhores e faz a mutação entre os 4 piores
 
-    for(int i = 40; i < 50; i++) {
-      swap(population.at(n).chromosome.at(i), population.at(population.size() - n - 1).chromosome.at(i));
-    }
-
-    for(int i = 80; i < 90; i++) {
-      swap(population.at(n).chromosome.at(i), population.at(population.size() - n - 1).chromosome.at(i));
+  int slice_position = 0;
+  for(int n = 0; n < 2; n++) {
+    while (!slice_position)
+      slice_position = (rand() % population_size);
+    for(int i = 0; i < slice_position; i++) {
+      swap(population.at(population.size() - 1 - (n * 2)).chromosome.at(i), population.at(population.size() - 2 - (n * 2)).chromosome.at(i));
     }
   }
 }
@@ -56,7 +48,7 @@ void cross_over(vector<gene>& population, int population_size) {
 void mutation(vector<gene>& population) {
   int bit = 0;
   
-  for (int i = 0; i < population.size(); i++) {
+  for (int i = 6; i < population.size(); i++) {
     bit = (rand() % population.size());
     if ((rand() % 10) == (rand() % 10)) { 
       population.at(i).chromosome.at(bit) = !population.at(i).chromosome.at(bit);
@@ -79,14 +71,16 @@ int main(int argc, char** argv) {
   begin_population(p, population_size, number_of_attributes);
   gene best_gene = { vector<int>(number_of_attributes), 0 };
   
-  for(int j = 0; j < 6; j++) {
+  for(int j = 0; j < 20; j++) {
     cout << "---------------------- Geration " << (j + 1) << " ----------------------" << endl;
     for(int i = 0; i < population_size; i++) {
       p.at(i).accuracy = (prepare_knn(p.at(i).chromosome, 1)); //população e k
       // cout << p.at(i).accuracy << endl;
-      cout << "Acurracy of gene " << i << " is " << p.at(i).accuracy << "%" << endl;
+      if (argc > 3 && !strcmp(argv[3], "--log")) {
+        cout << "Acurracy of gene " << i << " is " << p.at(i).accuracy << "%" << endl;
       print(p.at(i).chromosome, "");
-      
+      }
+            
       if (p.at(i).accuracy > best_gene.accuracy) {
         copy(p.at(i).chromosome.begin(), p.at(i).chromosome.end(), best_gene.chromosome.begin());
         best_gene.accuracy = p.at(i).accuracy;
