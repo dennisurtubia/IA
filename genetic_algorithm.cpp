@@ -77,15 +77,24 @@ int main(int argc, char** argv) {
 	int population_size = 10;
   int number_of_attributes = 132;
   begin_population(p, population_size, number_of_attributes);
+  gene best_gene = { vector<int>(number_of_attributes), 0 };
   
   for(int j = 0; j < 6; j++) {
     cout << "---------------------- Geration " << (j + 1) << " ----------------------" << endl;
     for(int i = 0; i < population_size; i++) {
       p.at(i).accuracy = (prepare_knn(p.at(i).chromosome, 1)); //população e k
       // cout << p.at(i).accuracy << endl;
+      cout << "Acurracy of gene " << i << " is " << p.at(i).accuracy << "%" << endl;
       print(p.at(i).chromosome, "");
+      
+      if (p.at(i).accuracy > best_gene.accuracy) {
+        copy(p.at(i).chromosome.begin(), p.at(i).chromosome.end(), best_gene.chromosome.begin());
+        best_gene.accuracy = p.at(i).accuracy;
+      }
     }
     // cout << "-------------------" << endl;
+    cout << "Best Acurracy " << " is " << best_gene.accuracy << "%" << endl;
+    print(best_gene.chromosome, "");
 
     selection(p);
     cross_over(p, population_size);

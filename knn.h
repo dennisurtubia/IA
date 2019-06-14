@@ -150,7 +150,5 @@ double prepare_knn(vector<int>& attrs, int k) {
   double b = (values * 100);
   double c = (b / a);
 
-  
-  cout << "Accuracy = " << c << "%" << endl;
   return c;
 }
