@@ -10,6 +10,14 @@ using namespace std;
 vector<vector <float> > samples = vector<vector <float> >();
 vector<vector <float> > tests = vector<vector <float> >();
 
+void print(vector<int> vec, string separator) {
+  for (int i = 0; i < vec.size(); i++) {
+    cout << vec.at(i);
+    if ((i + 1) < vec.size())
+      cout << separator;
+  }
+  cout << endl;
+}
 
 struct Moda {
   int value, qtd;
