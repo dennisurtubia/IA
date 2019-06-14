@@ -1,5 +1,5 @@
 COMP=g++
-ARQ=knn
+ARQ=genetic_algorithm
 TRAIN=arquivos/treinamento.txt
 TEST=arquivos/teste.txt
 

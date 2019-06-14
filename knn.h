@@ -7,6 +7,10 @@
 
 using namespace std;
 
+vector<vector <float> > samples = vector<vector <float> >();
+vector<vector <float> > tests = vector<vector <float> >();
+
+
 struct Moda {
   int value, qtd;
 };
@@ -15,11 +19,11 @@ bool compare(vector<float> v1, vector<float> v2) {
   return (v1.at(v1.size() - 1) < v2.at(v2.size() - 1));
 }
 
-bool modaCompare(Moda m1, Moda m2) {
+bool moda_compare(Moda m1, Moda m2) {
   return (m1.qtd > m2.qtd);
 }
 
-int knn(vector<vector <float> >& samples, vector<float> test, vector<int> attr, int k) {
+int knn(vector<float> test, vector<int> attr, int k) {
   float dist = 0, aux = 0;
 
   for (int i = 0; i < samples.size(); i++) {
@@ -53,7 +57,7 @@ int knn(vector<vector <float> >& samples, vector<float> test, vector<int> attr, 
     }
   }
 
-  sort(moda.begin(), moda.end(), modaCompare);
+  sort(moda.begin(), moda.end(), moda_compare);
   // Exibe as classes por quantidade
   // for (int i = 0; i < moda.size(); i++) {
   //   cout << moda.at(i).value << "  |  " << moda.at(i).qtd << endl;
@@ -62,7 +66,7 @@ int knn(vector<vector <float> >& samples, vector<float> test, vector<int> attr, 
   return moda.at(0).value;
 }
 
-void parseLine(string line, vector<float>* parsedLine) {
+void parse_line(string line, vector<float>* parsedLine) {
 
   stringstream token(line);
 
@@ -73,53 +77,56 @@ void parseLine(string line, vector<float>* parsedLine) {
   }
 } 
 
-void getSamples(char* file, vector<vector <float> >* samples) {
-  ifstream train;
+void get_sets(char* file_training, char* file_test) {
+  ifstream file;
   string line;
 
-  train.open(file, ios::in);
+  file.open(file_training, ios::in);
 
-  if (!train.is_open()) {
+  if (!file.is_open()) {
     cout << "falha na abertura do arquivo" << endl;
     exit(1);
   }
 
-  while (getline(train, line)) {
+  while (getline(file, line)) {
     vector<float> lineParsed = vector<float>();
-    parseLine(line, &lineParsed);
+    parse_line(line, &lineParsed); 
 
-    (*samples).push_back(lineParsed);
+    samples.push_back(lineParsed);
+  }
+  file.close();
+  // ------------------------------------------------------
+  file.open(file_test, ios::in);
+
+  if (!file.is_open()) {
+    cout << "falha na abertura do arquivo" << endl;
+    exit(1);
+  }
+
+  while (getline(file, line)) {
+    vector<float> lineParsed = vector<float>();
+    parse_line(line, &lineParsed);
+
+    tests.push_back(lineParsed);
   }
 }
 
-int main(int argc, char** argv) {
-  if (argc < 3) {
-    cout << "Parametros insuficientes" << endl;
-    exit(0);
-  }
-  vector<vector <float> > samples = vector<vector <float> >();
-  getSamples(argv[1], &samples);
-
-  vector<vector <float> > tests = vector<vector <float> >();
-  getSamples(argv[2], &tests);
-
-  vector<int> attrs;
-
-  for (int i = 0; i < 132; i++) {
-    attrs.push_back(i);
-  }
-
+double prepare_knn(vector<int>& attrs, int k) {
   vector<int> accuracy = vector<int>();
 
-  for(int i = 0, current = -1; i < tests.size(); i++, current = -1) {
-    current = knn(samples, tests.at(i), attrs, 1);
+  vector<int> formated_attrs = vector<int>();
 
-    //cout << "element " << i << " is " << tests.at(i).at(tests.at(i).size() - 1) << " knn results " << current << endl;
+  for (int i = 0; i < attrs.size(); i++) {
+    if (attrs.at(i))
+      formated_attrs.push_back(i);
+  }
+
+  for(int i = 0, current = -1; i < tests.size(); i++, current = -1) {
+    current = knn(tests.at(i), formated_attrs, k);
 
     accuracy.push_back((current == tests.at(i).at(tests.at(i).size() - 1)) ?
       1: 0
     );
-
     // Apaga as distancias
     for (int i = 0; i < samples.size(); i++) {
       samples.at(i).pop_back();
@@ -132,9 +139,10 @@ int main(int argc, char** argv) {
     values += accuracy.at(i);
   }
   int a = accuracy.size();
-  float b = (values * 100);
-  float c = (b / a);
+  double b = (values * 100);
+  double c = (b / a);
 
+  
   cout << "Accuracy = " << c << "%" << endl;
-  return 0;
+  return c;
 }
